@@ -94,10 +94,22 @@ STATIC mp_obj_t mtp_read(mp_obj_t self_in) {
 }
 MP_DEFINE_CONST_FUN_OBJ_1(mtp_read_obj, mtp_read);
 
+
+STATIC mp_obj_t mtp_read_filtered(mp_obj_t self_in) {
+    mtp_obj_t *self = self_in;
+    uint16_t value;
+    esp_err_t err = touch_pad_read_filtered(self->touchpad_id, &value);
+    if (err == ESP_OK) return MP_OBJ_NEW_SMALL_INT(value);
+    mp_raise_ValueError("Touch pad error");
+}
+MP_DEFINE_CONST_FUN_OBJ_1(mtp_read_obj_filtered, mtp_read_filtered);
+
+
 STATIC const mp_rom_map_elem_t mtp_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_config), MP_ROM_PTR(&mtp_config_obj) },
     { MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&mtp_read_obj) },
+    { MP_ROM_QSTR(MP_QSTR_read_filtered), MP_ROM_PTR(&mtp_read_obj_filtered) }
 };
 
 STATIC MP_DEFINE_CONST_DICT(mtp_locals_dict, mtp_locals_dict_table);
