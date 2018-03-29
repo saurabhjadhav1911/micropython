@@ -1,5 +1,5 @@
 include ../../py/mkenv.mk
-
+include component.mk
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h
 
@@ -13,6 +13,7 @@ FROZEN_MPY_DIR = modules
 
 # include py core make definitions
 include $(TOP)/py/py.mk
+
 
 PORT ?= /dev/ttyUSB0
 BAUD ?= 460800
@@ -50,6 +51,8 @@ endif
 
 # pretty format of ESP IDF version, used internally by the IDF
 IDF_VER := $(shell git -C $(ESPIDF) describe)
+
+
 
 INC += -I.
 INC += -I$(TOP)
@@ -130,6 +133,7 @@ endif
 SRC_C = \
 	main.c \
 	uart.c \
+	artest.cpp \
 	gccollect.c \
 	mphalport.c \
 	fatfs_port.c \
