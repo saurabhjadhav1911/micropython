@@ -21,6 +21,7 @@ FLASH_MODE ?= dio
 FLASH_FREQ ?= 40m
 FLASH_SIZE ?= 4MB
 CROSS_COMPILE ?= xtensa-esp32-elf-
+BOARD=esp32
 
 ESPIDF_SUPHASH := 3ede9f011b50999b0560683f9419538c066dd09e
 
@@ -95,13 +96,16 @@ INC_ESPCOMP += -I$(ESPCOMP)/ethernet/include
 INC_ESPCOMP += -I$(ESPCOMP)/app_trace/include
 INC_ESPCOMP += -I$(ESPCOMP)/app_update/include
 
+INC_ARDUINOCOMP += -I$(TOP)/ports/esp32/components/arduino/cores/esp32
+INC_ARDUINOCOMP += -I$(TOP)/ports/esp32/components/arduino/variants/$(BOARD)
+
 CFLAGS_BASE = -std=gnu99 -Os -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib -Wall -Werror -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -DMBEDTLS_CONFIG_FILE='"mbedtls/esp_config.h"' -DHAVE_CONFIG_H -DESP_PLATFORM
 CFLAGS = $(CFLAGS_BASE) $(INC) $(INC_ESPCOMP)
 CFLAGS += -DIDF_VER=\"$(IDF_VER)\"
 CFLAGS += $(CFLAGS_MOD)
 
 # this is what ESPIDF uses for c++ compilation
-CXXFLAGS = -std=gnu++11 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib -Wall -Werror -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -DESP_PLATFORM $(INC) $(INC_ESPCOMP)
+CXXFLAGS = -std=gnu++11 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib -Wall -Werror -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -DESP_PLATFORM $(INC) $(INC_ESPCOMP) $(INC_ARDUINOCOMP)
 
 LDFLAGS = -nostdlib -Map=$(@:.elf=.map) --cref
 LDFLAGS += --gc-sections -static -EL
@@ -133,7 +137,6 @@ endif
 SRC_C = \
 	main.c \
 	uart.c \
-	artest.cpp \
 	gccollect.c \
 	mphalport.c \
 	fatfs_port.c \
@@ -160,6 +163,9 @@ SRC_C = \
 	mpthreadport.c \
 	machine_rtc.c \
 	$(SRC_MOD)
+
+SRC_CPP = \
+	artest.cpp \
 
 EXTMOD_SRC_C = $(addprefix extmod/,\
 	modonewire.c \
@@ -209,6 +215,13 @@ OBJ_MP += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(EXTMOD_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(LIB_SRC_C:.c=.o))
 OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_C:.c=.o))
+
+
+OBJ_MP += $(addprefix $(BUILD)/, $(SRC_CPP:.cpp=.o))
+OBJ_MP += $(addprefix $(BUILD)/, $(EXTMOD_SRC_CPP:.c=.o))
+OBJ_MP += $(addprefix $(BUILD)/, $(LIB_SRC_CPP:.c=.o))
+OBJ_MP += $(addprefix $(BUILD)/, $(DRIVERS_SRC_CPP:.c=.o))
+
 
 # List of sources for qstr extraction
 SRC_QSTR += $(SRC_C) $(EXTMOD_SRC_C) $(LIB_SRC_C) $(DRIVERS_SRC_C)
@@ -622,6 +635,7 @@ idf-version:
 
 $(BUILD)/firmware.bin: $(BUILD)/bootloader.bin $(BUILD)/partitions.bin $(BUILD)/application.bin
 	$(ECHO) "Create $@"
+	$(ECHO) "Top $(TOP)"
 	$(Q)$(PYTHON) makeimg.py $^ $@
 
 deploy: $(BUILD)/firmware.bin
