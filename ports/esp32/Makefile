@@ -95,9 +95,11 @@ INC_ESPCOMP += -I$(ESPCOMP)/wpa_supplicant/port/include
 INC_ESPCOMP += -I$(ESPCOMP)/ethernet/include
 INC_ESPCOMP += -I$(ESPCOMP)/app_trace/include
 INC_ESPCOMP += -I$(ESPCOMP)/app_update/include
+INC_ESPCOMP += -I$(TOP)/ports/esp32/components/micropython-wrap
 
 INC_ARDUINOCOMP += -I$(TOP)/ports/esp32/components/arduino/cores/esp32
 INC_ARDUINOCOMP += -I$(TOP)/ports/esp32/components/arduino/variants/$(BOARD)
+INC_ARDUINOCOMP += -I$(TOP)/ports/esp32/components/micropython-wrap
 
 CFLAGS_BASE = -std=gnu99 -Os -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib -Wall -Werror -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -DMBEDTLS_CONFIG_FILE='"mbedtls/esp_config.h"' -DHAVE_CONFIG_H -DESP_PLATFORM
 CFLAGS = $(CFLAGS_BASE) $(INC) $(INC_ESPCOMP)
@@ -137,6 +139,7 @@ endif
 SRC_C = \
 	main.c \
 	uart.c \
+	arduino.c \
 	gccollect.c \
 	mphalport.c \
 	fatfs_port.c \
