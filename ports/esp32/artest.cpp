@@ -9,6 +9,7 @@
 #include "py/mphal.h"
 #include "drivers/dht/dht.h"
 #include "artest.h"
+/*
 #include <components/micropython-wrap/functionwrapper.h>
 
 //function we want to call from within a MicroPython script
@@ -38,12 +39,12 @@ extern "C"
     wrapfunc.Def< FunctionNames::TransformList >( SomeFunction );
   }
 }
-/*
-int fun()
+*/
+int funn()
 {
 	return (4);
 }
-
+/*
 STATIC mp_obj_t arduino_arset(void) {
     return mp_obj_new_int_from_uint(fun());
 }

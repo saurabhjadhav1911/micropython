@@ -102,7 +102,7 @@ INC_ARDUINOCOMP += -I$(TOP)/ports/esp32/components/arduino/variants/$(BOARD)
 INC_ARDUINOCOMP += -I$(TOP)/ports/esp32/components/micropython-wrap
 
 CFLAGS_BASE = -std=gnu99 -Os -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib -Wall -Werror -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -DMBEDTLS_CONFIG_FILE='"mbedtls/esp_config.h"' -DHAVE_CONFIG_H -DESP_PLATFORM
-CFLAGS = $(CFLAGS_BASE) $(INC) $(INC_ESPCOMP)
+CFLAGS = $(CFLAGS_BASE) $(INC) $(INC_ESPCOMP) $(INC_ARDUINOCOMP)
 CFLAGS += -DIDF_VER=\"$(IDF_VER)\"
 CFLAGS += $(CFLAGS_MOD)
 
@@ -169,6 +169,7 @@ SRC_C = \
 
 SRC_CPP = \
 	artest.cpp \
+	arduinocpp.cpp
 
 EXTMOD_SRC_C = $(addprefix extmod/,\
 	modonewire.c \

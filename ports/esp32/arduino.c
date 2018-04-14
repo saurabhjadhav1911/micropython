@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <Arduino.h>
 
 #include "rom/gpio.h"
 #include "esp_log.h"
@@ -9,6 +10,7 @@
 #include "py/mphal.h"
 #include "drivers/dht/dht.h"
 #include "modesp.h"
+#include "arduinocpp.h"
 
 int fun()
 {
@@ -16,7 +18,7 @@ int fun()
 }
 
 STATIC mp_obj_t arduino_arset(void) {
-    return mp_obj_new_int_from_uint(fun());
+    return mp_obj_new_int_from_uint(test());
 }
 
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(arduino_arset_obj, arduino_arset);
